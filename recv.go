@@ -71,9 +71,9 @@ func recv(ch *amqp.Channel) {
 		nil)
 	failOnError(err, "Failed to bind a queue")
 	err = ch.Qos(
-		0,     // prefetch count
-		0,     // prefetch size
-		false, // global
+		qosPcount, // prefetch count
+		0,         // prefetch size
+		qosGlobal, // global
 	)
 	failOnError(err, "Failed to Set Qos")
 	//d, n, err := ch.Get(q.Name, true)
