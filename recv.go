@@ -82,7 +82,7 @@ func recv(ch *amqp.Channel) {
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"xxxx", // consumer
-		false,  // auto-ack
+		noack,  // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -95,46 +95,19 @@ func recv(ch *amqp.Channel) {
 		i := 0
 		for d := range msgs {
 			i++
-			//_ = d
 			x, _ := strconv.ParseInt(string(d.Body), 10, 64)
-			fmt.Printf("=> %d, ==%d==, %t, %d, %v\n", len(d.Body), x, d.Redelivered, d.DeliveryTag, d.Priority)
-			if i == 1000000 {
-				break
-				err := ch.Recover(false)
-				failOnError(err, "Failed to Recover")
-			} else {
-				//fmt.Println("Ack", x)
-				err = d.Ack(false)
-				_ = d
-				//_ = err
-				failOnError(err, "Failed to Ack")
-				//time.Sleep(time.Second)
+			if verbose {
+				fmt.Printf("=> %d, ==%d==, %t, %d, %v\n", len(d.Body), x, d.Redelivered, d.DeliveryTag, d.Priority)
 			}
-			//time.Sleep(20 * time.Millisecond)
-			//failOnError(err, "Failed to Ack")
-			//d.Reject(true)
-			//d.Reject(true)
-			/*if i == 1000 {
-				ch.Ack(d.DeliveryTag, false)
-				ch.Nack(d.DeliveryTag-1, true, true)
-				//err := ch.Recover(true)
-				//failOnError(err, "Failed to Recover")
-				//fmt.Printf("Nacked!!!")
-				//d.Nack(true, true)
-				//ch.Nack(0, true, true)
-				break
-			}*/
-			//_ = d
-			if i == 100000*10 {
-				break
+			if !noack {
+				err = d.Ack(false)
+				failOnError(err, "Failed to Ack")
 			}
 		}
 		log.Printf("==========OK")
 		close(forever)
 	}()
 
-	//time.Sleep(time.Millisecond * 100)
-	//ch.Cancel("xxxx", false)
 	log.Printf(" [*] Waiting for logs. To exit press CTRL+C")
 	<-forever
 }

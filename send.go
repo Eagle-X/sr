@@ -61,29 +61,27 @@ func send(ch *amqp.Channel) {
 	for i := 0; i < count; i++ {
 		copy(body, []byte(fmt.Sprint(i)))
 		//log.Printf("===> %d", i)
-		for {
-			/*if f == amqp.Persistent {
-				f = amqp.Transient
-			} else {
-				f = amqp.Persistent
-			}*/
-			err = ch.Publish(
-				"logs-internal", // exchange
-				"",              // routing key
-				false,           // mandatory
-				false,           // immediate
-				amqp.Publishing{
-					DeliveryMode: f,
-					//DeliveryMode: amqp.Persistent,
-					//DeliveryMode: amqp.Transient,
-					ContentType: "text/plain",
-					//Body:        body,
-					//Body: []byte(body),
-					Body: []byte(fmt.Sprint(i)),
-				})
-			if err != nil {
-				failOnError(err, "Failed to publish a message")
-			}
+		/*if f == amqp.Persistent {
+			f = amqp.Transient
+		} else {
+			f = amqp.Persistent
+		}*/
+		err = ch.Publish(
+			"logs-internal", // exchange
+			"",              // routing key
+			false,           // mandatory
+			false,           // immediate
+			amqp.Publishing{
+				DeliveryMode: f,
+				//DeliveryMode: amqp.Persistent,
+				//DeliveryMode: amqp.Transient,
+				ContentType: "text/plain",
+				//Body:        body,
+				//Body: []byte(body),
+				Body: []byte(fmt.Sprint(i)),
+			})
+		if err != nil {
+			failOnError(err, "Failed to publish a message")
 		}
 		//time.Sleep(time.Microsecond * 20)
 		//time.Sleep(time.Second)
