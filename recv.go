@@ -76,8 +76,6 @@ func recv(ch *amqp.Channel) {
 		qosGlobal, // global
 	)
 	failOnError(err, "Failed to Set Qos")
-	//d, n, err := ch.Get(q.Name, true)
-	//fmt.Println(d.Body, n, err)
 
 	msgs, err := ch.Consume(
 		q.Name, // queue
