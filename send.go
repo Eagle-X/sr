@@ -10,39 +10,6 @@ import (
 )
 
 func send(ch *amqp.Channel) {
-	err := ch.ExchangeDeclare(
-		"logs",   // name
-		"fanout", // type
-		true,     // durable
-		false,    // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
-
-	args := make(amqp.Table)
-	args["x-expires"] = int32(10000)
-	//args["x-message-ttl"] = int32(100000)
-
-	q, err := ch.QueueDeclare(
-		"fff", // name
-		true,  // durable
-		false, // delete when usused
-		false, // exclusive
-		false, // no-wait
-		nil,   // arguments
-	)
-	failOnError(err, "Failed to declare a queue")
-
-	err = ch.QueueBind(
-		q.Name,          // queue name
-		"",              // routing key
-		"logs-internal", // exchange
-		false,
-		nil)
-	failOnError(err, "Failed to bind a queue")
-
 	returnCh := ch.NotifyReturn(make(chan amqp.Return))
 	go func() {
 		for r := range returnCh {
@@ -66,7 +33,7 @@ func send(ch *amqp.Channel) {
 		} else {
 			f = amqp.Persistent
 		}*/
-		err = ch.Publish(
+		err := ch.Publish(
 			"logs-internal", // exchange
 			"",              // routing key
 			false,           // mandatory

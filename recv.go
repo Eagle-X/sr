@@ -9,68 +9,7 @@ import (
 )
 
 func recv(ch *amqp.Channel) {
-	err := ch.ExchangeDeclare(
-		"logs",   // name
-		"fanout", // type
-		true,     // durable
-		false,    // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
-
-	err = ch.ExchangeDeclare(
-		"logs-internal", // name
-		"fanout",        // type
-		true,            // durable
-		false,           // auto-deleted
-		false,           // internal
-		false,           // no-wait
-		nil,             // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
-	err = ch.ExchangeDeclarePassive(
-		"logs-internal", // name
-		"fanout",        // type
-		false,           // durable
-		false,           // auto-deleted
-		false,           // internal
-		false,           // no-wait
-		nil,             // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
-	err = ch.ExchangeBind(
-		"logs-internal", // queue name
-		"",              // routing key
-		"logs",          // exchange
-		false,
-		nil)
-	failOnError(err, "Failed to bind a queue")
-
-	args := make(amqp.Table)
-	args["x-expires"] = int32(10000)
-	//args["x-message-ttl"] = int32(-1)
-	//args["x-max-priority"] = int32(64)
-
-	q, err := ch.QueueDeclare(
-		"fff", // name
-		true,  // durable
-		false, // delete when usused
-		false, // exclusive
-		false, // no-wait
-		nil,   // arguments
-	)
-	failOnError(err, "Failed to declare a queue")
-
-	err = ch.QueueBind(
-		q.Name,          // queue name
-		"",              // routing key
-		"logs-internal", // exchange
-		false,
-		nil)
-	failOnError(err, "Failed to bind a queue")
-	err = ch.Qos(
+	err := ch.Qos(
 		qosPcount, // prefetch count
 		0,         // prefetch size
 		qosGlobal, // global
@@ -78,7 +17,7 @@ func recv(ch *amqp.Channel) {
 	failOnError(err, "Failed to Set Qos")
 
 	msgs, err := ch.Consume(
-		q.Name, // queue
+		Q01,    // queue
 		"xxxx", // consumer
 		noack,  // auto-ack
 		false,  // exclusive
@@ -97,7 +36,7 @@ func recv(ch *amqp.Channel) {
 			if verbose {
 				fmt.Printf("=> %d, ==%d==, %t, %d, %v\n", len(d.Body), x, d.Redelivered, d.DeliveryTag, d.Priority)
 			}
-			if !noack {
+			if !noack && !notAck {
 				err = d.Ack(false)
 				failOnError(err, "Failed to Ack")
 			}

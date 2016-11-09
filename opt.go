@@ -9,6 +9,7 @@ var (
 	isRecv    bool
 	verbose   bool
 	noack     bool
+	notAck    bool
 	bid       int
 	count     int
 	qosPcount int
@@ -20,6 +21,7 @@ func init() {
 	flag.BoolVar(&isRecv, "r", false, "Receive messages")
 	flag.BoolVar(&verbose, "v", false, "Verbose log info")
 	flag.BoolVar(&noack, "noack", false, "Consume with noack")
+	flag.BoolVar(&notAck, "not-ack", false, "Not send ack")
 	flag.IntVar(&bid, "b", 0, "Broker ID")
 	flag.IntVar(&count, "c", 10, "Message count")
 	flag.IntVar(&qosPcount, "qos-pc", 0, "Qos pretch count")
