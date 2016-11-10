@@ -85,8 +85,12 @@ func main() {
 	if bid < 0 || bid >= len(brokers) {
 		log.Fatalf("Invalid broker id: %d", bid)
 	}
-	log.Printf("Connect to %s", brokers[bid])
-	conn, err := amqp.Dial(brokers[bid])
+	bk := brokers[bid]
+	if len(broker) > 0 {
+		bk = broker
+	}
+	log.Printf("Connect to %s", bk)
+	conn, err := amqp.Dial(bk)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

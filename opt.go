@@ -5,6 +5,7 @@ import (
 )
 
 var (
+	broker    string
 	lb        bool
 	isRecv    bool
 	verbose   bool
@@ -17,6 +18,7 @@ var (
 )
 
 func init() {
+	flag.StringVar(&broker, "broker", "", "Broker connect string")
 	flag.BoolVar(&lb, "l", false, "List all brokers")
 	flag.BoolVar(&isRecv, "r", false, "Receive messages")
 	flag.BoolVar(&verbose, "v", false, "Verbose log info")
