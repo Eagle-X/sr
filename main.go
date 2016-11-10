@@ -59,7 +59,7 @@ func declare(ch *amqp.Channel) {
 
 	q, err := ch.QueueDeclare(
 		Q01,   // name
-		true,  // durable
+		!ndq,  // durable
 		false, // delete when usused
 		false, // exclusive
 		false, // no-wait

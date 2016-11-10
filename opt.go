@@ -15,6 +15,7 @@ var (
 	count     int
 	qosPcount int
 	qosGlobal bool
+	ndq       bool
 )
 
 func init() {
@@ -28,5 +29,6 @@ func init() {
 	flag.IntVar(&count, "c", 10, "Message count")
 	flag.IntVar(&qosPcount, "qos-pc", 0, "Qos pretch count")
 	flag.BoolVar(&qosGlobal, "qos-g", false, "Qos global")
+	flag.BoolVar(&ndq, "ndq", false, "None-durable queue")
 	flag.Parse()
 }
