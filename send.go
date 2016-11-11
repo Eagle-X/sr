@@ -25,6 +25,9 @@ func send(ch *amqp.Channel) {
 	f := amqp.Persistent
 	body := make([]byte, 512)
 	log.Printf("Send %d messages", count)
+	if count == 0 {
+		count = 10
+	}
 	for i := 0; i < count; i++ {
 		copy(body, []byte(fmt.Sprint(i)))
 		//log.Printf("===> %d", i)

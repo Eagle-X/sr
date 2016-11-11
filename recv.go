@@ -40,6 +40,9 @@ func recv(ch *amqp.Channel) {
 				err = d.Ack(false)
 				failOnError(err, "Failed to Ack")
 			}
+			if i == count {
+				break
+			}
 		}
 		log.Printf("==========OK")
 		close(forever)

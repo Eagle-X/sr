@@ -26,7 +26,7 @@ func init() {
 	flag.BoolVar(&noack, "noack", false, "Consume with noack")
 	flag.BoolVar(&notAck, "not-ack", false, "Not send ack")
 	flag.IntVar(&bid, "b", 0, "Broker ID")
-	flag.IntVar(&count, "c", 10, "Message count")
+	flag.IntVar(&count, "c", 0, "Message count")
 	flag.IntVar(&qosPcount, "qos-pc", 0, "Qos pretch count")
 	flag.BoolVar(&qosGlobal, "qos-g", false, "Qos global")
 	flag.BoolVar(&ndq, "ndq", false, "None-durable queue")
