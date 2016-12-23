@@ -17,13 +17,13 @@ func recv(ch *amqp.Channel) {
 	failOnError(err, "Failed to Set Qos")
 
 	msgs, err := ch.Consume(
-		Q01,    // queue
-		"xxxx", // consumer
-		noack,  // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		Q01,   // queue
+		"",    // consumer
+		noack, // auto-ack
+		false, // exclusive
+		false, // no-local
+		false, // no-wait
+		nil,   // args
 	)
 	failOnError(err, "Failed to bind a queue")
 
@@ -45,7 +45,7 @@ func recv(ch *amqp.Channel) {
 			}
 		}
 		log.Printf("==========OK")
-		close(forever)
+		//close(forever)
 	}()
 
 	log.Printf(" [*] Waiting for logs. To exit press CTRL+C")

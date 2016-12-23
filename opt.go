@@ -30,5 +30,6 @@ func init() {
 	flag.IntVar(&qosPcount, "qos-pc", 0, "Qos pretch count")
 	flag.BoolVar(&qosGlobal, "qos-g", false, "Qos global")
 	flag.BoolVar(&ndq, "ndq", false, "None-durable queue")
+	flag.StringVar(&Q01, "q", "fff", "Queue name")
 	flag.Parse()
 }

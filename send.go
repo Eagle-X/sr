@@ -13,7 +13,7 @@ func send(ch *amqp.Channel) {
 	returnCh := ch.NotifyReturn(make(chan amqp.Return))
 	go func() {
 		for r := range returnCh {
-			//log.Println(r)
+			log.Println(r)
 			log.Println(r.ReplyCode, r.ReplyText)
 		}
 
@@ -36,6 +36,9 @@ func send(ch *amqp.Channel) {
 		} else {
 			f = amqp.Persistent
 		}*/
+		if verbose {
+			log.Printf("===> %d", i)
+		}
 		err := ch.Publish(
 			"logs-internal", // exchange
 			"",              // routing key
