@@ -21,6 +21,34 @@ func failOnError(err error, msg string) {
 	}
 }
 
+func declareBindQueueOnly(ch *amqp.Channel) {
+	for i := 0; i < count; i++ {
+		q, e := ch.QueueDeclare(
+			fmt.Sprintf("%s_%03d", Q01, i), // name
+			true,  // durable
+			false, // delete when usused
+			false, // exclusive
+			false, // no-wait
+			nil,   // arguments
+		)
+		failOnError(e, "Failed to declare a queue")
+		err := ch.QueueBind(
+			q.Name, // queue name
+			"",     // routing key
+			Ex02,   // exchange
+			false,
+			nil)
+		failOnError(err, "Failed to bind a queue")
+	}
+
+}
+
+func deleteQueueOnly(ch *amqp.Channel) {
+	for i := 0; i < count; i++ {
+		ch.QueueDelete(fmt.Sprintf("%s_%03d", Q01, i), false, false, true)
+	}
+}
+
 func declare(ch *amqp.Channel) {
 	err := ch.ExchangeDeclare(
 		Ex01,     // name
@@ -82,10 +110,10 @@ func main() {
 		return
 	}
 
-	if bid < 0 || bid >= len(brokers) {
-		log.Fatalf("Invalid broker id: %d", bid)
-	}
 	bk := brokers[bid]
+	if bk == "" {
+		log.Fatalf("Invalid broker name: %s", bid)
+	}
 	if len(broker) > 0 {
 		bk = broker
 	}
@@ -97,6 +125,16 @@ func main() {
 	ch, err := conn.Channel()
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
+
+	if declareQ {
+		declareBindQueueOnly(ch)
+		return
+	}
+
+	if deleteQ {
+		deleteQueueOnly(ch)
+		return
+	}
 
 	declare(ch)
 

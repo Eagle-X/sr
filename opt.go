@@ -11,11 +11,13 @@ var (
 	verbose   bool
 	noack     bool
 	notAck    bool
-	bid       int
+	bid       string
 	count     int
 	qosPcount int
 	qosGlobal bool
 	ndq       bool
+	declareQ  bool
+	deleteQ   bool
 )
 
 func init() {
@@ -25,11 +27,13 @@ func init() {
 	flag.BoolVar(&verbose, "v", false, "Verbose log info")
 	flag.BoolVar(&noack, "noack", false, "Consume with noack")
 	flag.BoolVar(&notAck, "not-ack", false, "Not send ack")
-	flag.IntVar(&bid, "b", 0, "Broker ID")
+	flag.StringVar(&bid, "b", "0", "Broker name")
 	flag.IntVar(&count, "c", 0, "Message count")
 	flag.IntVar(&qosPcount, "qos-pc", 0, "Qos pretch count")
 	flag.BoolVar(&qosGlobal, "qos-g", false, "Qos global")
 	flag.BoolVar(&ndq, "ndq", false, "None-durable queue")
 	flag.StringVar(&Q01, "q", "fff", "Queue name")
+	flag.BoolVar(&declareQ, "declare_q", false, "Declare queue")
+	flag.BoolVar(&deleteQ, "delete_q", false, "Delete queue")
 	flag.Parse()
 }

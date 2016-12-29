@@ -41,9 +41,10 @@ func send(ch *amqp.Channel) {
 		}
 		err := ch.Publish(
 			"logs-internal", // exchange
-			"",              // routing key
-			false,           // mandatory
-			false,           // immediate
+			//"amq.topic", // exchange
+			"a001", // routing key
+			false,  // mandatory
+			false,  // immediate
 			amqp.Publishing{
 				DeliveryMode: f,
 				//DeliveryMode: amqp.Persistent,
