@@ -18,6 +18,7 @@ var (
 	ndq       bool
 	declareQ  bool
 	deleteQ   bool
+	sendLimit int
 )
 
 func init() {
@@ -35,5 +36,6 @@ func init() {
 	flag.StringVar(&Q01, "q", "fff", "Queue name")
 	flag.BoolVar(&declareQ, "declare_q", false, "Declare queue")
 	flag.BoolVar(&deleteQ, "delete_q", false, "Delete queue")
+	flag.IntVar(&sendLimit, "send_limit", 0, "Send limit")
 	flag.Parse()
 }

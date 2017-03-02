@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/streadway/amqp"
 )
@@ -57,6 +58,7 @@ func send(ch *amqp.Channel) {
 		if err != nil {
 			failOnError(err, "Failed to publish a message")
 		}
+		time.Sleep(time.Duration(sendLimit) * time.Millisecond)
 		//time.Sleep(time.Microsecond * 20)
 		//time.Sleep(time.Second)
 
