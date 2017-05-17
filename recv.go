@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
 	"log"
 	"strconv"
@@ -35,6 +36,9 @@ func recv(ch *amqp.Channel) {
 			x, _ := strconv.ParseInt(string(d.Body), 10, 64)
 			if verbose {
 				fmt.Printf("=> %d, ==%d==, %t, %d, %v\n", len(d.Body), x, d.Redelivered, d.DeliveryTag, d.Priority)
+			}
+			if md5Sum {
+				fmt.Printf("=>%+v %x\n", d, md5.Sum(d.Body))
 			}
 			if !noack && !notAck {
 				err = d.Ack(false)

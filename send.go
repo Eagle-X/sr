@@ -24,6 +24,9 @@ func send(ch *amqp.Channel) {
 	//body := bodyFrom(os.Args)
 	//f := amqp.Transient
 	f := amqp.Persistent
+	if transient {
+		f = amqp.Transient
+	}
 	body := make([]byte, 512)
 	log.Printf("Send %d messages", count)
 	if count == 0 {
@@ -41,7 +44,8 @@ func send(ch *amqp.Channel) {
 			log.Printf("===> %d", i)
 		}
 		err := ch.Publish(
-			"logs-internal", // exchange
+			Ex,
+			//"logs-internal", // exchange
 			//"amq.topic", // exchange
 			"a001", // routing key
 			false,  // mandatory

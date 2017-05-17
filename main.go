@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	Ex   = "logs-internal"
 	Ex01 = "logs"
 	Ex02 = "logs-internal"
 	Q01  = "fff"
@@ -22,6 +23,9 @@ func failOnError(err error, msg string) {
 }
 
 func declareBindQueueOnly(ch *amqp.Channel) {
+	args := make(amqp.Table)
+	args["x-expires"] = int32(10000)
+
 	for i := 0; i < count; i++ {
 		q, e := ch.QueueDeclare(
 			fmt.Sprintf("%s_%03d", Q01, i), // name
@@ -51,7 +55,7 @@ func deleteQueueOnly(ch *amqp.Channel) {
 
 func declare(ch *amqp.Channel) {
 	err := ch.ExchangeDeclare(
-		Ex01,     // name
+		Ex,       // name
 		"fanout", // type
 		true,     // durable
 		false,    // auto-deleted
@@ -61,7 +65,11 @@ func declare(ch *amqp.Channel) {
 	)
 	failOnError(err, "Failed to declare an exchange")
 
-	err = ch.ExchangeDeclare(
+	if !isRecv {
+		return
+	}
+
+	/*err = ch.ExchangeDeclare(
 		Ex02,     // name
 		"fanout", // type
 		true,     // durable
@@ -78,10 +86,11 @@ func declare(ch *amqp.Channel) {
 		Ex01, // exchange
 		false,
 		nil)
-	failOnError(err, "Failed to bind a queue")
+	failOnError(err, "Failed to bind a queue")*/
 
 	args := make(amqp.Table)
-	args["x-expires"] = int32(10000)
+	//args["x-expires"] = int32(10000)
+	args["x-queue-master-locator"] = "client-local"
 	//args["x-message-ttl"] = int32(-1)
 	//args["x-max-priority"] = int32(64)
 
@@ -97,8 +106,8 @@ func declare(ch *amqp.Channel) {
 
 	err = ch.QueueBind(
 		q.Name, // queue name
-		"",     // routing key
-		Ex02,   // exchange
+		bind,   // routing key
+		Ex,     // exchange
 		false,
 		nil)
 	failOnError(err, "Failed to bind a queue")
@@ -136,7 +145,9 @@ func main() {
 		return
 	}
 
-	declare(ch)
+	if autoDeclare {
+		declare(ch)
+	}
 
 	if isRecv {
 		recv(ch)
